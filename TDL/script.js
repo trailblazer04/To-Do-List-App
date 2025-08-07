@@ -29,10 +29,31 @@ listContainer.addEventListener("click", function(e){
 }, false);
 
 function saveData(){
-    localStorage.setItem("data", listContainer.innerHTML);
+    const tasks = [];
+    const liElements = listContainer.querySelectorAll("li");
+    liElements.forEach(li => {
+        // Get only the text content of the li, excluding the span
+        const taskText = li.childNodes[0].textContent.trim();
+        if(taskText) {
+            tasks.push(taskText);
+        }
+    });
+    localStorage.setItem("data", JSON.stringify(tasks));
 }
 
 function showTask(){
-    listContainer.innerHTML = localStorage.getItem("data");
+    const savedTasks = localStorage.getItem("data");
+    if(savedTasks) {
+        const tasks = JSON.parse(savedTasks);
+        listContainer.innerHTML = "";
+        tasks.forEach(taskText => {
+            let li = document.createElement("li");
+            li.innerHTML = taskText;
+            listContainer.appendChild(li);
+            let span = document.createElement("span");
+            span.innerHTML = "\u00d7";
+            li.appendChild(span);
+        });
+    }
 }
 showTask();
